@@ -46,6 +46,9 @@ def configure_manifest_files(app):
                 for k in manifest.keys():
                     manifest[k] = os.path.join("dist", manifest[k])
         except Exception:
+            print("Call file: ", os.path.dirname(__file__))
+            print("MAN FILE: ", os.path.join(os.path.dirname(__file__),
+                                         'static/dist/manifest.json'))
             print("Please make sure to build the frontend in "
                   "static/ directory and restart the server")
             pass
