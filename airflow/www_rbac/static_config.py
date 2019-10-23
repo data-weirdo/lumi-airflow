@@ -45,7 +45,8 @@ def configure_manifest_files(app):
 
                 for k in manifest.keys():
                     manifest[k] = os.path.join("dist", manifest[k])
-        except Exception:
+        except Exception as e:
+            print("Exception: ", e)
             print("Call file: ", os.path.dirname(__file__))
             print("MAN FILE: ", os.path.join(os.path.dirname(__file__),
                                          'static/dist/manifest.json'))
