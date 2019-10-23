@@ -17,30 +17,30 @@
 
 import base64
 import hashlib
-from queue import Empty
-
-import re
 import json
 import multiprocessing
-from dateutil import parser
+import re
+from queue import Empty
 from uuid import uuid4
+
 import kubernetes
+from dateutil import parser
 from kubernetes import watch, client
 from kubernetes.client.rest import ApiException
 from urllib3.exceptions import HTTPError
 
-from airflow.configuration import conf
-from airflow.contrib.kubernetes.pod_launcher import PodLauncher
-from airflow.contrib.kubernetes.kube_client import get_kube_client
-from airflow.contrib.kubernetes.worker_configuration import WorkerConfiguration
-from airflow.executors.base_executor import BaseExecutor
-from airflow.executors import Executors
-from airflow.models import KubeResourceVersion, KubeWorkerIdentifier, TaskInstance
-from airflow.utils.state import State
-from airflow.utils.db import provide_session, create_session
 from airflow import configuration, settings
+from airflow.configuration import conf
+from airflow.contrib.kubernetes.kube_client import get_kube_client
+from airflow.contrib.kubernetes.pod_launcher import PodLauncher
+from airflow.contrib.kubernetes.worker_configuration import WorkerConfiguration
 from airflow.exceptions import AirflowConfigException, AirflowException
+from airflow.executors import Executors
+from airflow.executors.base_executor import BaseExecutor
+from airflow.models import KubeResourceVersion, KubeWorkerIdentifier, TaskInstance
+from airflow.utils.db import provide_session, create_session
 from airflow.utils.log.logging_mixin import LoggingMixin
+from airflow.utils.state import State
 
 
 class KubernetesExecutorConfig:
@@ -323,7 +323,8 @@ class KubernetesJobWatcher(multiprocessing.Process, LoggingMixin, object):
             try:
                 self.resource_version = self._run(kube_client, self.resource_version,
                                                   self.worker_uuid, self.kube_config)
-            except Exception:
+            except Exception as e:
+                self.log.exception('EXCEPTION: ', e)
                 self.log.exception('Unknown error in KubernetesJobWatcher. Failing')
                 raise
             else:
